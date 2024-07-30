@@ -1,0 +1,3 @@
+[submodule "src/pugl/pugl_source"]
+	path = src/pugl/pugl_source
+	url = https://github.com/lv2/pugl
