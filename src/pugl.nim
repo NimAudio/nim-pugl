@@ -29,5 +29,5 @@ when defined(macosx):
 else:
     {.compile("includes.c", "-v -Isrc/pugl/pugl_source/include") .}
 
-var foo = puglGlBackend()
-echo(foo)
+# var foo = puglGlBackend()
+# echo(foo)
