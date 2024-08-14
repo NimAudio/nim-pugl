@@ -140,16 +140,25 @@ else:
   static :
     hint("Declaration of " & "enumpuglviewhint" &
         " already exists, not redeclaring")
-when not declared(enumpuglviewhintvalue):
-  type
-    enumpuglviewhintvalue* {.size: sizeof(cint).} = enum
-      Pugldontcare = -1, Puglfalse = 0, Pugltrue = 1, Puglopenglapi = 2,
-      Puglopenglesapi = 3, Puglopenglcoreprofile = 4,
-      Puglopenglcompatibilityprofile = 5
-else:
-  static :
-    hint("Declaration of " & "enumpuglviewhintvalue" &
-        " already exists, not redeclaring")
+# when not declared(enumpuglviewhintvalue):
+#   type
+#     enumpuglviewhintvalue* {.size: sizeof(cint).} = enum
+#       Pugldontcare = -1, Puglfalse = 0, Pugltrue = 1, Puglopenglapi = 2,
+#       Puglopenglesapi = 3, Puglopenglcoreprofile = 4,
+#       Puglopenglcompatibilityprofile = 5
+# else:
+#   static :
+#     hint("Declaration of " & "enumpuglviewhintvalue" &
+#         " already exists, not redeclaring")
+
+const PUGL_DONT_CARE                    *: cint = -1
+const PUGL_FALSE                        *: cint = 0
+const PUGL_TRUE                         *: cint = 1
+const PUGL_OPENGL_API                   *: cint = 2
+const PUGL_OPENGL_ESAPI                 *: cint = 3
+const PUGL_OPENGL_CORE_PROFILE          *: cint = 4
+const PUGL_OPENGL_COMPATIBILITY_PROFILE *: cint = 5
+
 when not declared(enumpuglviewtype):
   type
     enumpuglviewtype* {.size: sizeof(cuint).} = enum
@@ -434,7 +443,7 @@ type
   Puglnativeview_520094196 = uintptrt_520094149 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:928:19
   Puglhandle_520094198 = pointer ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:931:15
   Puglviewhint_520094202 = enumpuglviewhint_520094201 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:955:3
-  Puglviewhintvalue_520094206 = enumpuglviewhintvalue_520094205 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:969:3
+  # Puglviewhintvalue_520094206 = enumpuglviewhintvalue_520094205 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:969:3
   Puglviewtype_520094210 = enumpuglviewtype_520094209 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:976:3
   Puglsizehint_520094214 = enumpuglsizehint_520094213 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:1031:3
   Pugleventfunc_520094216 = proc (a0: ptr Puglview_520094189; a1: ptr Puglevent_520094167): Puglstatus_520094171 {.
@@ -820,18 +829,18 @@ type
     Pugleventclient
    else:
     Pugleventclient_520094256)
-  Puglviewhintvalue_520094207 = (when declared(Puglviewhintvalue):
-    Puglviewhintvalue
-   else:
-    Puglviewhintvalue_520094206)
+  # Puglviewhintvalue_520094207 = (when declared(Puglviewhintvalue):
+  #   Puglviewhintvalue
+  #  else:
+  #   Puglviewhintvalue_520094206)
   Puglcreateevent_520094227 = (when declared(Puglcreateevent):
     Puglcreateevent
    else:
     Puglcreateevent_520094226)
-  enumpuglviewhintvalue_520094205 = (when declared(enumpuglviewhintvalue):
-    enumpuglviewhintvalue
-   else:
-    enumpuglviewhintvalue_520094204)
+  # enumpuglviewhintvalue_520094205 = (when declared(enumpuglviewhintvalue):
+  #   enumpuglviewhintvalue
+  #  else:
+  #   enumpuglviewhintvalue_520094204)
   structpuglworldimpl_520094175 = (when declared(structpuglworldimpl):
     structpuglworldimpl
    else:
@@ -1440,13 +1449,13 @@ else:
   static :
     hint("Declaration of " & "Pugleventclient" &
         " already exists, not redeclaring")
-when not declared(Puglviewhintvalue):
-  type
-    Puglviewhintvalue* = Puglviewhintvalue_520094206
-else:
-  static :
-    hint("Declaration of " & "Puglviewhintvalue" &
-        " already exists, not redeclaring")
+# when not declared(Puglviewhintvalue):
+#   type
+#     Puglviewhintvalue* = Puglviewhintvalue_520094206
+# else:
+#   static :
+#     hint("Declaration of " & "Puglviewhintvalue" &
+#         " already exists, not redeclaring")
 when not declared(Puglcreateevent):
   type
     Puglcreateevent* = Puglcreateevent_520094226
