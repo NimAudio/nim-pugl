@@ -379,7 +379,7 @@ type
 
   Pugldataevent_520094162 = structpugldataevent_520094161 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:673:3
   unionpuglevent_520094164 {.union, bycopy.} = object
-    any*: Puglanyevent_520094070 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:691:9
+    anyevent*: Puglanyevent_520094070 ## Generated based on nim-pugl/src/pugl/pugl_source/src/../include/pugl/pugl.h:691:9
     typefield*: Pugleventtype_520094056
     button*: Puglbuttonevent_520094137
     configure*: Puglconfigureevent_520094084
