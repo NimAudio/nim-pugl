@@ -1078,9 +1078,9 @@ var
   glGetAttachedShaders*: proc (program: GLuint, maxCount: GLsizei, count: ptr GLsizei, shaders: ptr GLuint) {.stdcall.}
   glGetAttribLocation*: proc (program: GLuint, name: cstring): GLint {.stdcall.}
   glGetProgramiv*: proc (program: GLuint, pname: GLenum, params: ptr GLint) {.stdcall.}
-  glGetProgramInfoLog*: proc (program: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: cstring) {.stdcall.}
+  glGetProgramInfoLog*: proc (program: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: ptr cstring) {.stdcall.}
   glGetShaderiv*: proc (shader: GLuint, pname: GLenum, params: ptr GLint) {.stdcall.}
-  glGetShaderInfoLog*: proc (shader: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: cstring) {.stdcall.}
+  glGetShaderInfoLog*: proc (shader: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: ptr cstring) {.stdcall.}
   glGetShaderSource*: proc (shader: GLuint, bufSize: GLsizei, length: ptr GLsizei, source: cstring) {.stdcall.}
   glGetUniformLocation*: proc (program: GLuint, name: cstring): GLint {.stdcall.}
   glGetUniformfv*: proc (program: GLuint, location: GLint, params: ptr GLfloat) {.stdcall.}
@@ -1606,9 +1606,9 @@ proc load_GL_VERSION_2_0(load: proc) =
   glGetAttachedShaders = cast[proc (program: GLuint, maxCount: GLsizei, count: ptr GLsizei, shaders: ptr GLuint) {.stdcall.}](load("glGetAttachedShaders"))
   glGetAttribLocation = cast[proc (program: GLuint, name: cstring): GLint {.stdcall.}](load("glGetAttribLocation"))
   glGetProgramiv = cast[proc (program: GLuint, pname: GLenum, params: ptr GLint) {.stdcall.}](load("glGetProgramiv"))
-  glGetProgramInfoLog = cast[proc (program: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: cstring) {.stdcall.}](load("glGetProgramInfoLog"))
+  glGetProgramInfoLog = cast[proc (program: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: ptr cstring) {.stdcall.}](load("glGetProgramInfoLog"))
   glGetShaderiv = cast[proc (shader: GLuint, pname: GLenum, params: ptr GLint) {.stdcall.}](load("glGetShaderiv"))
-  glGetShaderInfoLog = cast[proc (shader: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: cstring) {.stdcall.}](load("glGetShaderInfoLog"))
+  glGetShaderInfoLog = cast[proc (shader: GLuint, bufSize: GLsizei, length: ptr GLsizei, infoLog: ptr cstring) {.stdcall.}](load("glGetShaderInfoLog"))
   glGetShaderSource = cast[proc (shader: GLuint, bufSize: GLsizei, length: ptr GLsizei, source: cstring) {.stdcall.}](load("glGetShaderSource"))
   glGetUniformLocation = cast[proc (program: GLuint, name: cstring): GLint {.stdcall.}](load("glGetUniformLocation"))
   glGetUniformfv = cast[proc (program: GLuint, location: GLint, params: ptr GLfloat) {.stdcall.}](load("glGetUniformfv"))
