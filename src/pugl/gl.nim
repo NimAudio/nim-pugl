@@ -115,7 +115,7 @@ proc `or`*(a, b: GLbitfield): GLbitfield {.borrow.}
 proc hash*(x: GLenum): int = x.int
 
 const
-  GL_FALSE* = 0
+  GL_FALSE* = 0.GLboolean
   GL_INVALID_INDEX* = 0xFFFFFFFF'u32
   GL_NONE* = 0
   GL_NONE_OES* = 0
@@ -123,7 +123,7 @@ const
   GL_ONE* = 1
   GL_TIMEOUT_IGNORED* = 0xFFFFFFFFFFFFFFFF'u64
   GL_TIMEOUT_IGNORED_APPLE* = 0xFFFFFFFFFFFFFFFF'u64
-  GL_TRUE* = 1
+  GL_TRUE* = 1.GLboolean
   GL_VERSION_ES_CL_1_0* = 1
   GL_VERSION_ES_CL_1_1* = 1
   GL_VERSION_ES_CM_1_1* = 1
@@ -236,13 +236,13 @@ const
   GL_DONT_CARE* = 0x1100.GLenum
   GL_FASTEST* = 0x1101.GLenum
   GL_NICEST* = 0x1102.GLenum
-  cGL_BYTE* = 0x1400.GLenum
-  GL_UNSIGNED_BYTE* = 0x1401.GLenum
-  cGL_SHORT* = 0x1402.GLenum
-  GL_UNSIGNED_SHORT* = 0x1403.GLenum
-  cGL_INT* = 0x1404.GLenum
-  GL_UNSIGNED_INT* = 0x1405.GLenum
-  cGL_FLOAT* = 0x1406.GLenum
+  GL_TYPE_BYTE* = 0x1400.GLenum
+  GL_TYPE_UNSIGNED_BYTE* = 0x1401.GLenum
+  GL_TYPE_SHORT* = 0x1402.GLenum
+  GL_TYPE_UNSIGNED_SHORT* = 0x1403.GLenum
+  GL_TYPE_INT* = 0x1404.GLenum
+  GL_TYPE_UNSIGNED_INT* = 0x1405.GLenum
+  GL_TYPE_FLOAT* = 0x1406.GLenum
   GL_CLEAR* = 0x1500.GLenum
   GL_AND* = 0x1501.GLenum
   GL_AND_REVERSE* = 0x1502.GLenum
@@ -306,7 +306,7 @@ const
   GL_TEXTURE_GREEN_SIZE* = 0x805D.GLenum
   GL_TEXTURE_BLUE_SIZE* = 0x805E.GLenum
   GL_TEXTURE_ALPHA_SIZE* = 0x805F.GLenum
-  cGL_DOUBLE* = 0x140A.GLenum
+  GL_TYPE_DOUBLE* = 0x140A.GLenum
   GL_PROXY_TEXTURE_1D* = 0x8063.GLenum
   GL_PROXY_TEXTURE_2D* = 0x8064.GLenum
   GL_R3_G3_B2* = 0x2A10.GLenum
