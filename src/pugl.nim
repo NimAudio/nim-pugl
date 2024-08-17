@@ -16,8 +16,8 @@ import std/[os] #, paths]
 export pugl_header, gl
 
 proc puglGetProcAddress*(name: cstring): pointer {.cdecl, importc: "puglGetProcAddress".}
-proc puglEnterContext*(view: Puglview): Puglstatus {.cdecl, importc: "puglEnterContext".}
-proc puglLeaveContext*(view: Puglview): Puglstatus {.cdecl, importc: "puglLeaveContext".}
+proc puglEnterContext*(view: ptr Puglview): Puglstatus {.cdecl, importc: "puglEnterContext".}
+proc puglLeaveContext*(view: ptr Puglview): Puglstatus {.cdecl, importc: "puglLeaveContext".}
 proc puglGlBackend*(): ptr Puglbackend {.cdecl, importc: "puglGlBackend".}
 
 # var package_path = Path(getAppDir())
