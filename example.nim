@@ -159,10 +159,9 @@ glShaderSource(GLuint(vertex_shader_id), GLsizei(1), allocCStringArray([vertex_s
 glCompileShader(vertex_shader_id)
 var success: int32
 glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, addr success)
-# has error somewhere \/
 if success == 0:
     var info_log: cstring # = "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "
-    glGetShaderInfoLog(vertex_shader_id, 512, nil, addr info_log)
+    glGetShaderInfoLog(vertex_shader_id, 512, nil, info_log)
     echo("vertex shader compilation failed")
     echo(info_log)
 
@@ -174,7 +173,7 @@ glCompileShader(fragment_shader_id)
 glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, addr success)
 if success == 0:
     var info_log: cstring
-    glGetShaderInfoLog(fragment_shader_id, 512, nil, addr info_log)
+    glGetShaderInfoLog(fragment_shader_id, 512, nil, info_log)
     echo("fragment shader compilation failed")
     echo(info_log)
 
@@ -186,7 +185,7 @@ glLinkProgram(shader_program_id)
 glGetProgramiv(shader_program_id, GL_LINK_STATUS, addr success)
 if success == 0:
     var info_log: cstring
-    glGetProgramInfoLog(fragment_shader_id, 512, nil, addr info_log)
+    glGetProgramInfoLog(fragment_shader_id, 512, nil, info_log)
     echo("shader program link failed")
     echo(info_log)
 glUseProgram(shader_program_id)
