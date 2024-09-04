@@ -41,10 +41,11 @@ echo(puglstrerror(puglSetViewHint(view, PUGL_CONTEXT_VERSION_MAJOR, 3)))
 echo(puglstrerror(puglSetViewHint(view, PUGL_CONTEXT_VERSION_MINOR, 3)))
 echo(puglstrerror(puglSetViewHint(view, PUGL_CONTEXT_PROFILE, PUGL_OPENGL_CORE_PROFILE)))
 
-var vertices: array[9, float32] = [
-    -0.5, -0.5, 0.0,
-     0.5, -0.5, 0.0,
-     0.0,  0.5, 0.0
+var vertices: array[28, float32] = [
+    -0.5, -0.5, 0.0,   1.0, 0.0, 0.0, 1.0,
+     0.5, -0.5, 0.0,   0.0, 1.0, 0.0, 1.0,
+    -0.5,  0.5, 0.0,   0.0, 0.0, 1.0, 1.0,
+     0.5,  0.5, 0.0,   0.5, 0.5, 0.0, 1.0,
 ]
 # var vertices = [
 #     0.25, 0.25, 0.0,
@@ -52,28 +53,35 @@ var vertices: array[9, float32] = [
 #     0.75, 0.25, 0.0
 # ]
 var vbo: uint32
+var ibo: uint32
 var vao: uint32
 
-var indices = [0, 1, 2]
+var indices: array[0..5, uint32] = [0, 1, 2, 1, 2, 3]
 
 var vertex_shader_str: string = """
 #version 330 core
-layout (location = 0) in vec3 aPos;
+layout (location = 0) in vec3 pos;
+layout (location = 1) in vec4 vert_color;
+
+out vec4 color;
 
 void main()
 {
-    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
+    color = vert_color;
 }
 """
 var vertex_shader_id: uint32
 
 var fragment_shader_str: string = """
 #version 330 core
+in vec4 color;
+
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    FragColor = vec4(color.r, color.g, color.b, 1.0f); //vec4(1.0f, 0.5f, 0.2f, 1.0f);
 }
 """
 var fragment_shader_id: uint32
@@ -91,7 +99,8 @@ proc onEvent(view: ptr PuglView, event: ptr PuglEvent): PuglStatus {.cdecl.} =
         of Puglunrealize:
             discard
         of Puglconfigure:
-            echo("configure")
+            discard
+            # echo("configure")
         of Puglupdate:
             discard
         of Puglexpose:
@@ -100,7 +109,10 @@ proc onEvent(view: ptr PuglView, event: ptr PuglEvent): PuglStatus {.cdecl.} =
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
             glUseProgram(shader_program_id)
             glBindVertexArray(vao)
-            glDrawArrays(GL_TRIANGLES, 0, 3)
+            # glDrawArrays(GL_TRIANGLES, 0, 3)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo)
+            glDrawElements(GL_TRIANGLES, 6, GL_TYPE_UNSIGNED_INT, nil);
+            # glBindVertexArray(0)
         of Puglclose:
             quit()
         of Puglfocusin:
@@ -193,13 +205,23 @@ glDeleteShader(vertex_shader_id)
 glDeleteShader(fragment_shader_id)
 
 glGenVertexArrays(1, addr vao)
-glGenBuffers(1, addr vbo)
 glBindVertexArray(vao)
+
+glGenBuffers(1, addr vbo)
 glBindBuffer(GL_ARRAY_BUFFER, vbo)
 glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(vertices.sizeof), addr vertices, GL_STATIC_DRAW)
-glVertexAttribPointer(0, 3, GL_TYPE_FLOAT, GL_FALSE, 0, cast[pointer](0))
+
+glGenBuffers(1, addr ibo)
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo)
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, GLsizeiptr(indices.sizeof), addr indices, GL_STATIC_DRAW)
+
+glVertexAttribPointer(0, 3, GL_TYPE_FLOAT, GL_FALSE, 7 * float32.sizeof, cast[pointer](0))
+glVertexAttribPointer(1, 4, GL_TYPE_FLOAT, GL_FALSE, 7 * float32.sizeof, cast[pointer](3 * float32.sizeof))
 glEnableVertexAttribArray(0)
+glEnableVertexAttribArray(1)
+
 glBindBuffer(GL_ARRAY_BUFFER, 0)
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
 glBindVertexArray(0)
 
 echo(puglstrerror(puglleavecontext(view)))
