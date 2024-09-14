@@ -52,11 +52,15 @@ macro debug_call*(arg: untyped): untyped =
             new_proc[3] = statement[1][0][0]
             new_proc[4] = statement[1][0][1]
             var inputs: seq[NimNode]
-            var outputs: seq[NimNode]
             var to_echo: seq[NimNode]
+            var echo_after: seq[NimNode]
             to_echo &= ident("fgRed")
             to_echo &= newStrLitNode(statement[0].repr & ": ")
             to_echo &= ident("fgDefault")
+            var should_echo_after = false
+            echo_after &= ident("fgYellow")
+            echo_after &= newStrLitNode(" -> ")
+            echo_after &= ident("fgDefault")
             for input in statement[1][0][0]:
                 if input.kind == nnkIdentDefs:
                     # echo(input.treeRepr)
@@ -73,6 +77,17 @@ macro debug_call*(arg: untyped): untyped =
                         # deref &= ident(input[0].repr)
                         # prefix &= deref
                         prefix &= newCall(ident("safe_str"), ident(input[0].repr))
+                        echo_after &= ident("styleDim")
+                        echo_after &= newStrLitNode(input[0].repr & ": ")
+                        echo_after &= ident("resetStyle")
+                        var prefix2 = newNimNode(nnkPrefix)
+                        prefix2 &= ident("$")
+                        prefix2 &= newCall(ident("safe_str"), ident(input[0].repr))
+                        echo_after &= ident("fgGreen")
+                        echo_after &= prefix2
+                        echo_after &= ident("fgDefault")
+                        echo_after &= newStrLitNode(", ")
+                        should_echo_after = true
                     elif (input[1].kind != nnkPtrTy) and (input[1].repr != "pointer"):
                         if input[1].repr == "cstringArray":
                             # prefix &= newCall(ident("cstringArrayToSeq"), ident(input[0].repr))
@@ -88,15 +103,45 @@ macro debug_call*(arg: untyped): untyped =
             # statement[1][1] = ident(statement[0].repr & "Fn")
             # echo(statement[1][1].treeRepr)
             # new_proc[6] &= newCall("echo", to_echo)
-            new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo)
             if statement[1][0][0][0].kind == nnkEmpty:
+                if should_echo_after:
+                    new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo & echo_after)
+                else:
+                    new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo)
                 new_proc[6] &= newCall(ident(statement[0].repr & "Fn"), inputs)
-                var ret = newNimNode(nnkReturnStmt)
-                ret &= newEmptyNode()
-                new_proc[6] &= ret
             else:
+                var output_var = newNimNode(nnkVarSection)
+                output_var &= newNimNode(nnkIdentDefs)
+                output_var[0] &= ident("output")
+                output_var[0] &= statement[1][0][0][0]
+                output_var[0] &= newCall(ident(statement[0].repr & "Fn"), inputs)
+                new_proc[6] &= output_var
+
+                var prefix2: NimNode
+                if statement[1][0][0][0].repr != "GLenum":
+                    prefix2 = newNimNode(nnkPrefix)
+                    prefix2 &= ident("$")
+                    # echo(statement[1][0][0][0].treeRepr)
+                    if statement[1][0][0][0].kind == nnkPtrTy:
+                        prefix2 &= newCall(ident("safe_str"), ident("output"))
+                    elif (statement[1][0][0][0].kind == nnkIdent) and (statement[1][0][0][0].repr != "pointer") and (statement[1][0][0][0].repr != "cstringArray"):
+                        prefix2 &= ident("output")
+                    else:
+                        prefix2 &= newStrLitNode("unknown")
+                else:
+                    prefix2 = newNimNode(nnkPrefix)
+                    prefix2 &= ident("$")
+                    prefix2 &= newCall(ident("uint32"), ident("output"))
+                echo_after &= ident("styleDim")
+                echo_after &= newStrLitNode("return: ")
+                echo_after &= ident("resetStyle")
+                echo_after &= ident("fgYellow")
+                echo_after &= prefix2
+                echo_after &= ident("fgDefault")
+                new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo & echo_after)
+
                 var ret = newNimNode(nnkReturnStmt)
-                ret &= newCall(ident(statement[0].repr & "Fn"), inputs)
+                ret &= ident("output")
                 new_proc[6] &= ret
             # else:
             #     echo(statement.treeRepr)
