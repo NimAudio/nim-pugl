@@ -1,26 +1,26 @@
 # import gl
-import std/[macros, sugar]
+import std/[macros, terminal]
 
-macro expandMacros*(body: untyped) =
-    ## Expands one level of macro - useful for debugging.
-    ## Can be used to inspect what happens when a macro call is expanded,
-    ## without altering its result.
-    ##
-    ## For instance,
-    ##
-    ## .. code-block:: nim
-    ##   import std/[sugar, macros]
-    ##
-    ##   let
-    ##     x = 10
-    ##     y = 20
-    ##   expandMacros:
-    ##     dump(x + y)
-    ##
-    ## will actually dump `x + y`, but at the same time will print at
-    ## compile time the expansion of the `dump` macro, which in this
-    ## case is `debugEcho ["x + y", " = ", x + y]`.
-    echo(body.toStrLit)
+# macro expandMacros*(body: untyped) =
+#     ## Expands one level of macro - useful for debugging.
+#     ## Can be used to inspect what happens when a macro call is expanded,
+#     ## without altering its result.
+#     ##
+#     ## For instance,
+#     ##
+#     ## .. code-block:: nim
+#     ##   import std/[sugar, macros]
+#     ##
+#     ##   let
+#     ##     x = 10
+#     ##     y = 20
+#     ##   expandMacros:
+#     ##     dump(x + y)
+#     ##
+#     ## will actually dump `x + y`, but at the same time will print at
+#     ## compile time the expansion of the `dump` macro, which in this
+#     ## case is `debugEcho ["x + y", " = ", x + y]`.
+#     echo(body.toStrLit)
 
 macro debug_call*(arg: untyped): untyped =
     when not defined(gltrace):
@@ -52,11 +52,19 @@ macro debug_call*(arg: untyped): untyped =
             new_proc[3] = statement[1][0][0]
             new_proc[4] = statement[1][0][1]
             var inputs: seq[NimNode]
+            var outputs: seq[NimNode]
             var to_echo: seq[NimNode]
+            to_echo &= ident("fgRed")
             to_echo &= newStrLitNode(statement[0].repr & ": ")
+            to_echo &= ident("fgDefault")
             for input in statement[1][0][0]:
                 if input.kind == nnkIdentDefs:
                     # echo(input.treeRepr)
+                    to_echo &= ident("styleDim")
+                    to_echo &= newStrLitNode(input[0].repr & ": ")
+                    # if input[1].repr == "GLenum":
+                    #     to_echo &= newStrLitNode(input[1].repr & ": ")
+                    to_echo &= ident("resetStyle")
                     inputs &= ident(input[0].repr)
                     var prefix = newNimNode(nnkPrefix)
                     prefix &= ident("$")
@@ -79,7 +87,8 @@ macro debug_call*(arg: untyped): untyped =
             # if len(inputs) > 0:
             # statement[1][1] = ident(statement[0].repr & "Fn")
             # echo(statement[1][1].treeRepr)
-            new_proc[6] &= newCall("echo", to_echo)
+            # new_proc[6] &= newCall("echo", to_echo)
+            new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo)
             if statement[1][0][0][0].kind == nnkEmpty:
                 new_proc[6] &= newCall(ident(statement[0].repr & "Fn"), inputs)
                 var ret = newNimNode(nnkReturnStmt)
@@ -186,6 +195,9 @@ proc safe_str*[T](p: ptr T): string =
 # expandMacros:
 #     debug_call:
 #         glShaderSource = cast[proc (shader: int, count: int, strings: cstringArray, length: ptr int) {.stdcall.}](load("glShaderSource"))
+
+# dumpTree:
+#     stdout.styledWriteLine(fgRed, "red text ", styleBright, "bold red", fgDefault, " bold text", resetStyle, " default", styleDim, " dim?")
 
 # expandMacros:
 #     debug_to_str:
