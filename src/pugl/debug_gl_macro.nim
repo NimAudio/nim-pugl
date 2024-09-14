@@ -139,7 +139,7 @@ macro debug_to_str*(arg: untyped): untyped =
         output_nodes &= arg
         # echo(arg.treeRepr)
         for statement in arg[0]:
-            if statement[2].kind == nnkDistinctTy:
+            if (statement[2].kind == nnkDistinctTy) and (statement[0][1].repr != "GLenum"):
                 # echo(statement.treeRepr)
                 # echo(statement[0][1].treeRepr)
                 # echo(statement[2][0].treeRepr)
