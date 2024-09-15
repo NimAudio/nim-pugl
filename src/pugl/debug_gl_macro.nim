@@ -103,12 +103,13 @@ macro debug_call*(arg: untyped): untyped =
             # statement[1][1] = ident(statement[0].repr & "Fn")
             # echo(statement[1][1].treeRepr)
             # new_proc[6] &= newCall("echo", to_echo)
+            new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWrite")), to_echo)
             if statement[1][0][0][0].kind == nnkEmpty:
-                if should_echo_after:
-                    new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo & echo_after)
-                else:
-                    new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo)
                 new_proc[6] &= newCall(ident(statement[0].repr & "Fn"), inputs)
+                if should_echo_after:
+                    new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), echo_after)
+                else:
+                    new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("write")), newStrLitNode("\n"))
             else:
                 var output_var = newNimNode(nnkVarSection)
                 output_var &= newNimNode(nnkIdentDefs)
@@ -138,7 +139,8 @@ macro debug_call*(arg: untyped): untyped =
                 echo_after &= ident("fgYellow")
                 echo_after &= prefix2
                 echo_after &= ident("fgDefault")
-                new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo & echo_after)
+                # new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), to_echo & echo_after)
+                new_proc[6] &= newCall(newDotExpr(ident("stdout"), ident("styledWriteLine")), echo_after)
 
                 var ret = newNimNode(nnkReturnStmt)
                 ret &= ident("output")
@@ -155,9 +157,9 @@ macro debug_call*(arg: untyped): untyped =
             output_nodes &= newStmtList(loaded_ptr, newAssignment(statement[0], new_proc))
             # echo("---")
             # echo(newStmtList(loaded_ptr, capture_command).treeRepr)
+        # echo(newStmtList(output_nodes).treeRepr)
         return newStmtList(output_nodes)
         # echo(newStmtList(output_nodes).astGenRepr)
-        # echo(newStmtList(output_nodes).treeRepr)
 
 macro debug_types*(arg: untyped): untyped =
     when not defined(gltrace):
